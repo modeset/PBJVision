@@ -955,6 +955,11 @@ typedef void (^PBJVisionBlock)();
                     [_captureSession addOutput:_captureOutputVideo];
                     newCaptureOutput = _captureOutputVideo;
                 }
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+                if ([_delegate respondsToSelector:@selector(visionSessionDidConfigureVideo:)]) {
+                    [_delegate visionSessionDidConfigureVideo:self];
+                }
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
                 break;
             }
             case PBJCameraModePhoto:
@@ -1045,7 +1050,9 @@ typedef void (^PBJVisionBlock)();
     } else if ( newCaptureOutput && (newCaptureOutput == _captureOutputPhoto) ) {
     
         // specify photo preset
-        sessionPreset = AVCaptureSessionPresetPhoto;
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+        sessionPreset = _captureSessionPreset;
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
     
         // setup photo settings
         NSDictionary *photoSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
