@@ -135,7 +135,9 @@ extern NSString * const PBJVisionVideoThumbnailKey;
 
 @protocol PBJVisionDelegate <NSObject>
 @optional
-
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+- (void)visionSessionDidConfigureVideo:(PBJVision *)vision;
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
 - (void)visionSessionWillStart:(PBJVision *)vision;
 - (void)visionSessionDidStart:(PBJVision *)vision;
 - (void)visionSessionDidStop:(PBJVision *)vision;
