@@ -876,7 +876,11 @@ typedef void (^PBJVisionBlock)();
     AVCaptureDevice *newCaptureDevice = nil;
     
     [_captureSession beginConfiguration];
-    
+
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+    [_captureSession setSessionPreset:AVCaptureSessionPresetHigh];
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
+
     // setup session device
     
     if (shouldSwitchDevice) {
@@ -1051,7 +1055,16 @@ typedef void (^PBJVisionBlock)();
     
         // specify photo preset
 //////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+
+        if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset1920x1080])
+            _captureSessionPreset = AVCaptureSessionPreset1920x1080;
+        else if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720])
+            _captureSessionPreset = AVCaptureSessionPreset1280x720;
+        else if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetHigh])
+            _captureSessionPreset = AVCaptureSessionPresetHigh;
+
         sessionPreset = _captureSessionPreset;
+
 //////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
     
         // setup photo settings
