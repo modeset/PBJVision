@@ -958,7 +958,9 @@ typedef void (^PBJVisionBlock)();
         [_delegate visionWillStartFocus:self];
 
     CGPoint focusPoint = CGPointMake(0.5f, 0.5f);
-    [self focusAtAdjustedPoint:focusPoint];
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+    [self focusAtAdjustedPoint:focusPoint focusMode:AVCaptureFocusModeAutoFocus];
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
 }
 
 // TODO: should add in exposure and white balance locks for completeness one day
@@ -982,23 +984,25 @@ typedef void (^PBJVisionBlock)();
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
 - (void)focusAtAdjustedPoint:(CGPoint)adjustedPoint
+                   focusMode:(AVCaptureFocusMode)focusMode
 {
     if ([_currentDevice isAdjustingFocus] || [_currentDevice isAdjustingExposure])
         return;
 
     NSError *error = nil;
     if ([_currentDevice lockForConfiguration:&error]) {
-    
+
         BOOL isFocusAtPointSupported = [_currentDevice isFocusPointOfInterestSupported];
         BOOL isExposureAtPointSupported = [_currentDevice isExposurePointOfInterestSupported];
         BOOL isWhiteBalanceModeSupported = [_currentDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
-    
-        if (isFocusAtPointSupported && [_currentDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
+
+        if (isFocusAtPointSupported && [_currentDevice isFocusModeSupported:focusMode]) {
             [_currentDevice setFocusPointOfInterest:adjustedPoint];
-            [_currentDevice setFocusMode:AVCaptureFocusModeAutoFocus];
+            [_currentDevice setFocusMode:focusMode];
         }
-        
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
         if (isExposureAtPointSupported && [_currentDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
             [_currentDevice setExposurePointOfInterest:adjustedPoint];
             [_currentDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];

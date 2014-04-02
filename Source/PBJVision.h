@@ -102,7 +102,10 @@ extern NSString * const PBJVisionVideoThumbnailKey;
 
 // focus
 
-- (void)focusAtAdjustedPoint:(CGPoint)adjustedPoint;
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+- (void)focusAtAdjustedPoint:(CGPoint)adjustedPoint
+                   focusMode:(AVCaptureFocusMode)focusMode;
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
 
 // photo
 
