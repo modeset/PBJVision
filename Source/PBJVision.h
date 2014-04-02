@@ -158,6 +158,10 @@ extern NSString * const PBJVisionVideoCapturedDurationKey; // Captured duration 
 @property (nonatomic) PBJExposureMode exposureMode;
 @property (nonatomic, readonly, getter=isExposureLockSupported) BOOL exposureLockSupported;
 - (void)exposeAtAdjustedPointOfInterest:(CGPoint)adjustedPoint;
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+- (void)focusAtAdjustedPoint:(CGPoint)adjustedPoint
+                   focusMode:(AVCaptureFocusMode)focusMode;
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
 
 // photo
 

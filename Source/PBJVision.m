@@ -1306,16 +1306,15 @@ typedef void (^PBJVisionBlock)();
 
     NSError *error = nil;
     if ([_currentDevice lockForConfiguration:&error]) {
-    
+
         BOOL isFocusAtPointSupported = [_currentDevice isFocusPointOfInterestSupported];
         BOOL isExposureAtPointSupported = [_currentDevice isExposurePointOfInterestSupported];
         BOOL isWhiteBalanceModeSupported = [_currentDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
-    
+
         if (isFocusAtPointSupported && [_currentDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
             [_currentDevice setFocusPointOfInterest:adjustedPoint];
             [_currentDevice setFocusMode:AVCaptureFocusModeAutoFocus];
         }
-        
         if (isExposureAtPointSupported && [_currentDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
             [_currentDevice setExposurePointOfInterest:adjustedPoint];
             [_currentDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
@@ -1333,6 +1332,41 @@ typedef void (^PBJVisionBlock)();
         DLog(@"error locking device for focus / exposure / white-balance adjustment (%@)", error);
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////// START MODESET MODIFICATIONS
+- (void)focusAtAdjustedPoint:(CGPoint)adjustedPoint
+                   focusMode:(AVCaptureFocusMode)focusMode
+{
+    if ([_currentDevice isAdjustingFocus] || [_currentDevice isAdjustingExposure])
+        return;
+    
+    NSError *error = nil;
+    if ([_currentDevice lockForConfiguration:&error]) {
+        
+        BOOL isFocusAtPointSupported = [_currentDevice isFocusPointOfInterestSupported];
+        BOOL isExposureAtPointSupported = [_currentDevice isExposurePointOfInterestSupported];
+        BOOL isWhiteBalanceModeSupported = [_currentDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
+        
+        if (isFocusAtPointSupported && [_currentDevice isFocusModeSupported:focusMode]) {
+            [_currentDevice setFocusPointOfInterest:adjustedPoint];
+            [_currentDevice setFocusMode:focusMode];
+        }
+        if (isExposureAtPointSupported && [_currentDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
+            [_currentDevice setExposurePointOfInterest:adjustedPoint];
+            [_currentDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+        }
+        
+        if (isWhiteBalanceModeSupported) {
+            [_currentDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
+        }
+        
+        [_currentDevice unlockForConfiguration];
+        
+    } else if (error) {
+        DLog(@"error locking device for focus adjustment (%@)", error);
+    }
+}
+//////////////////////////////////////////////////////////////////////////////// END MODESET MODIFICATIONS
 
 #pragma mark - photo
 
